@@ -22,17 +22,17 @@
 
 **Primary Dependencies**: [e.g., FastAPI, UIKit, LLVM or NEEDS CLARIFICATION]
 
-**Storage**: [if applicable, e.g., PostgreSQL, CoreData, files or N/A]
+**Storage**: [client-side only; e.g., in-memory, browser storage, downloaded files, or N/A]
 
 **Testing**: [e.g., pytest, XCTest, cargo test or NEEDS CLARIFICATION]
 
-**Target Platform**: [e.g., Linux server, iOS 15+, WASM or NEEDS CLARIFICATION]
+**Target Platform**: [browser/static client; supported browsers or NEEDS CLARIFICATION]
 
-**Project Type**: [e.g., library/cli/web-service/mobile-app/compiler/desktop-app or NEEDS CLARIFICATION]
+**Project Type**: [static web app/client-side tool or NEEDS CLARIFICATION]
 
 **Performance Goals**: [domain-specific, e.g., 1000 req/s, 10k lines/sec, 60 fps or NEEDS CLARIFICATION]
 
-**Constraints**: [domain-specific, e.g., <200ms p95, <100MB memory, offline-capable or NEEDS CLARIFICATION]
+**Constraints**: [client-only; no backend/data upload; browser Excel parsing; self-contained HTML export; offline-capable or NEEDS CLARIFICATION]
 
 **Scale/Scope**: [domain-specific, e.g., 10k users, 1M LOC, 50 screens or NEEDS CLARIFICATION]
 
@@ -40,7 +40,16 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- Client-only execution: no backend, server processing, telemetry upload, or network
+  call that transmits workbook data, derived metrics, chart state, or export content.
+- Browser Excel parsing: workbook parsing occurs locally in the browser with
+  supported formats and worksheet/data-shape assumptions documented.
+- Simple readable code: dependencies and abstractions are justified by concrete
+  parsing, rendering, export, testing, or build value.
+- Self-contained HTML export: exported result embeds all runtime data, styles,
+  scripts, and assets; no CDN, remote font, remote image, remote script, or endpoint.
+- File format errors: invalid, unsupported, encrypted, malformed, and structurally
+  unexpected workbooks have user-facing handling.
 
 ## Project Structure
 
@@ -52,7 +61,7 @@ specs/[###-feature]/
 ├── research.md          # Phase 0 output (/speckit-plan command)
 ├── data-model.md        # Phase 1 output (/speckit-plan command)
 ├── quickstart.md        # Phase 1 output (/speckit-plan command)
-├── contracts/           # Phase 1 output (/speckit-plan command)
+├── fixtures/            # Optional workbook fixtures for import/export validation
 └── tasks.md             # Phase 2 output (/speckit-tasks command - NOT created by /speckit-plan)
 ```
 
@@ -65,39 +74,30 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
+# [REMOVE IF UNUSED] Option 1: Static client application (DEFAULT)
 src/
-├── models/
-├── services/
-├── cli/
+├── components/
+├── parsing/
+├── rendering/
+├── export/
 └── lib/
 
 tests/
-├── contract/
+├── fixtures/
 ├── integration/
 └── unit/
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
-backend/
-├── src/
-│   ├── models/
-│   ├── services/
-│   └── api/
-└── tests/
-
-frontend/
+# [REMOVE IF UNUSED] Option 2: Multi-package static client
+app/
 ├── src/
 │   ├── components/
-│   ├── pages/
-│   └── services/
+│   ├── parsing/
+│   ├── rendering/
+│   └── export/
 └── tests/
 
-# [REMOVE IF UNUSED] Option 3: Mobile + API (when "iOS/Android" detected)
-api/
-└── [same as backend above]
-
-ios/ or android/
-└── [platform-specific structure: feature modules, UI flows, platform tests]
+packages/
+└── [shared client-only packages, if justified]
 ```
 
 **Structure Decision**: [Document the selected structure and reference the real

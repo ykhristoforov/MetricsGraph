@@ -7,7 +7,7 @@ description: "Task list template for feature implementation"
 
 **Input**: Design documents from `/specs/[###-feature-name]/`
 
-**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md, contracts/
+**Prerequisites**: plan.md (required), spec.md (required for user stories), research.md, data-model.md
 
 **Tests**: The examples below include test tasks. Tests are OPTIONAL - only include them if explicitly requested in the feature specification.
 
@@ -22,8 +22,8 @@ description: "Task list template for feature implementation"
 ## Path Conventions
 
 - **Single project**: `src/`, `tests/` at repository root
-- **Web app**: `backend/src/`, `frontend/src/`
-- **Mobile**: `api/src/`, `ios/src/` or `android/src/`
+- **Static client app**: `src/`, `tests/`, and bundled assets at repository root
+- **Multi-package static client**: `app/src/`, `app/tests/`, and justified `packages/`
 - Paths shown below assume single project - adjust based on plan.md structure
 
 <!--
@@ -34,7 +34,7 @@ description: "Task list template for feature implementation"
   - User stories from spec.md (with their priorities P1, P2, P3...)
   - Feature requirements from plan.md
   - Entities from data-model.md
-  - Endpoints from contracts/
+  - Client-side parsing, rendering, and export flows from plan.md
 
   Tasks MUST be organized by user story so each story can be:
   - Implemented independently
@@ -63,12 +63,12 @@ description: "Task list template for feature implementation"
 
 Examples of foundational tasks (adjust based on your project):
 
-- [ ] T004 Setup database schema and migrations framework
-- [ ] T005 [P] Implement authentication/authorization framework
-- [ ] T006 [P] Setup API routing and middleware structure
-- [ ] T007 Create base models/entities that all stories depend on
-- [ ] T008 Configure error handling and logging infrastructure
-- [ ] T009 Setup environment configuration management
+- [ ] T004 Setup client-only project structure with no backend runtime
+- [ ] T005 [P] Add Excel fixture files for valid and invalid workbook scenarios
+- [ ] T006 [P] Configure browser-based Excel parsing boundary
+- [ ] T007 Create base client-side data models/entities that all stories depend on
+- [ ] T008 Configure user-facing file format error handling
+- [ ] T009 Configure self-contained asset bundling for app runtime and HTML export
 
 **Checkpoint**: Foundation ready - user story implementation can now begin in parallel
 
@@ -84,17 +84,17 @@ Examples of foundational tasks (adjust based on your project):
 
 > **NOTE: Write these tests FIRST, ensure they FAIL before implementation**
 
-- [ ] T010 [P] [US1] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T011 [P] [US1] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T010 [P] [US1] Import/export test for [scenario] in tests/integration/test_[name].[ext]
+- [ ] T011 [P] [US1] Invalid workbook test for [error case] in tests/fixtures/[name].[ext]
 
 ### Implementation for User Story 1
 
 - [ ] T012 [P] [US1] Create [Entity1] model in src/models/[entity1].py
 - [ ] T013 [P] [US1] Create [Entity2] model in src/models/[entity2].py
-- [ ] T014 [US1] Implement [Service] in src/services/[service].py (depends on T012, T013)
-- [ ] T015 [US1] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T014 [US1] Implement [client service/module] in src/[location]/[file].[ext] (depends on T012, T013)
+- [ ] T015 [US1] Implement [client feature] in src/[location]/[file].[ext]
 - [ ] T016 [US1] Add validation and error handling
-- [ ] T017 [US1] Add logging for user story 1 operations
+- [ ] T017 [US1] Verify no workbook data leaves the browser during user story 1 operations
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently
 
@@ -108,14 +108,14 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 2 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T018 [P] [US2] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T019 [P] [US2] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T018 [P] [US2] Import/export test for [scenario] in tests/integration/test_[name].[ext]
+- [ ] T019 [P] [US2] Offline export test for [user journey] in tests/integration/test_[name].[ext]
 
 ### Implementation for User Story 2
 
 - [ ] T020 [P] [US2] Create [Entity] model in src/models/[entity].py
-- [ ] T021 [US2] Implement [Service] in src/services/[service].py
-- [ ] T022 [US2] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T021 [US2] Implement [client service/module] in src/[location]/[file].[ext]
+- [ ] T022 [US2] Implement [client feature] in src/[location]/[file].[ext]
 - [ ] T023 [US2] Integrate with User Story 1 components (if needed)
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
@@ -130,14 +130,14 @@ Examples of foundational tasks (adjust based on your project):
 
 ### Tests for User Story 3 (OPTIONAL - only if tests requested) ⚠️
 
-- [ ] T024 [P] [US3] Contract test for [endpoint] in tests/contract/test_[name].py
-- [ ] T025 [P] [US3] Integration test for [user journey] in tests/integration/test_[name].py
+- [ ] T024 [P] [US3] Import/export test for [scenario] in tests/integration/test_[name].[ext]
+- [ ] T025 [P] [US3] Invalid workbook test for [error case] in tests/fixtures/[name].[ext]
 
 ### Implementation for User Story 3
 
 - [ ] T026 [P] [US3] Create [Entity] model in src/models/[entity].py
-- [ ] T027 [US3] Implement [Service] in src/services/[service].py
-- [ ] T028 [US3] Implement [endpoint/feature] in src/[location]/[file].py
+- [ ] T027 [US3] Implement [client service/module] in src/[location]/[file].[ext]
+- [ ] T028 [US3] Implement [client feature] in src/[location]/[file].[ext]
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -155,7 +155,8 @@ Examples of foundational tasks (adjust based on your project):
 - [ ] TXXX Code cleanup and refactoring
 - [ ] TXXX Performance optimization across all stories
 - [ ] TXXX [P] Additional unit tests (if requested) in tests/unit/
-- [ ] TXXX Security hardening
+- [ ] TXXX Verify generated HTML export is self-contained and opens offline
+- [ ] TXXX Verify runtime has no external network dependencies for workbook data, chart state, or export content
 - [ ] TXXX Run quickstart.md validation
 
 ---
@@ -180,8 +181,8 @@ Examples of foundational tasks (adjust based on your project):
 ### Within Each User Story
 
 - Tests (if included) MUST be written and FAIL before implementation
-- Models before services
-- Services before endpoints
+- Client data models before parsing/rendering/export modules
+- Core modules before UI integration
 - Core implementation before integration
 - Story complete before moving to next priority
 
@@ -200,8 +201,8 @@ Examples of foundational tasks (adjust based on your project):
 
 ```bash
 # Launch all tests for User Story 1 together (if tests requested):
-Task: "Contract test for [endpoint] in tests/contract/test_[name].py"
-Task: "Integration test for [user journey] in tests/integration/test_[name].py"
+Task: "Import/export test for [scenario] in tests/integration/test_[name].[ext]"
+Task: "Integration test for [user journey] in tests/integration/test_[name].[ext]"
 
 # Launch all models for User Story 1 together:
 Task: "Create [Entity1] model in src/models/[entity1].py"
@@ -249,4 +250,6 @@ With multiple developers:
 - Verify tests fail before implementing
 - Commit after each task or logical group
 - Stop at any checkpoint to validate story independently
+- Keep all workbook parsing and generated exports client-side
+- Verify exported HTML has no runtime CDN, remote font, remote script, remote image, or endpoint dependency
 - Avoid: vague tasks, same file conflicts, cross-story dependencies that break independence

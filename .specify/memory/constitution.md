@@ -1,50 +1,115 @@
-# [PROJECT_NAME] Constitution
-<!-- Example: Spec Constitution, TaskFlow Constitution, etc. -->
+<!--
+Sync Impact Report
+Version change: template -> 1.0.0
+Modified principles:
+- Template principle 1 -> I. Client-Only Execution
+- Template principle 2 -> II. Browser Excel Parsing
+- Template principle 3 -> III. Simple, Readable Code
+- Template principle 4 -> IV. Self-Contained HTML Export
+- Template principle 5 -> V. File Format Error Handling
+Added sections:
+- Project Constraints
+- Development Workflow
+Removed sections:
+- None
+Templates requiring updates:
+- UPDATED .specify/templates/plan-template.md
+- UPDATED .specify/templates/spec-template.md
+- UPDATED .specify/templates/tasks-template.md
+- REVIEWED .specify/templates/commands/*.md (no command templates present)
+- REVIEWED AGENTS.md (no principle-specific update required)
+Follow-up TODOs:
+- None
+-->
+# MetricsGraph Constitution
 
 ## Core Principles
 
-### [PRINCIPLE_1_NAME]
-<!-- Example: I. Library-First -->
-[PRINCIPLE_1_DESCRIPTION]
-<!-- Example: Every feature starts as a standalone library; Libraries must be self-contained, independently testable, documented; Clear purpose required - no organizational-only libraries -->
+### I. Client-Only Execution
+All user data MUST remain in the browser runtime. The application MUST NOT include
+backend services, server-side processing, telemetry uploads, analytics beacons, or
+network calls that transmit workbook data, derived metrics, chart state, or export
+content. Any future network capability MUST be disabled by default and justified by
+an approved constitution amendment.
 
-### [PRINCIPLE_2_NAME]
-<!-- Example: II. CLI Interface -->
-[PRINCIPLE_2_DESCRIPTION]
-<!-- Example: Every library exposes functionality via CLI; Text in/out protocol: stdin/args → stdout, errors → stderr; Support JSON + human-readable formats -->
+Rationale: MetricsGraph handles user-provided Excel files, so privacy and local
+control are product requirements rather than deployment preferences.
 
-### [PRINCIPLE_3_NAME]
-<!-- Example: III. Test-First (NON-NEGOTIABLE) -->
-[PRINCIPLE_3_DESCRIPTION]
-<!-- Example: TDD mandatory: Tests written → User approved → Tests fail → Then implement; Red-Green-Refactor cycle strictly enforced -->
+### II. Browser Excel Parsing
+Excel files MUST be parsed in the browser. Parsing logic MUST operate on the local
+file selected by the user and MUST NOT require upload, remote conversion, or server
+pre-processing. Supported workbook formats, worksheet selection behavior, and data
+shape assumptions MUST be explicit in feature specifications.
 
-### [PRINCIPLE_4_NAME]
-<!-- Example: IV. Integration Testing -->
-[PRINCIPLE_4_DESCRIPTION]
-<!-- Example: Focus areas requiring integration tests: New library contract tests, Contract changes, Inter-service communication, Shared schemas -->
+Rationale: Local parsing makes the privacy guarantee testable and keeps the product
+usable as a static client application.
 
-### [PRINCIPLE_5_NAME]
-<!-- Example: V. Observability, VI. Versioning & Breaking Changes, VII. Simplicity -->
-[PRINCIPLE_5_DESCRIPTION]
-<!-- Example: Text I/O ensures debuggability; Structured logging required; Or: MAJOR.MINOR.BUILD format; Or: Start simple, YAGNI principles -->
+### III. Simple, Readable Code
+Code MUST favor direct, understandable implementations over speculative abstraction.
+Modules MUST have clear responsibilities, readable names, and minimal hidden state.
+New dependencies MUST be justified by concrete value for Excel parsing, rendering,
+export, testing, or build ergonomics.
 
-## [SECTION_2_NAME]
-<!-- Example: Additional Constraints, Security Requirements, Performance Standards, etc. -->
+Rationale: The project is most maintainable when the data flow from workbook input
+to graph output can be inspected without chasing unnecessary framework layers.
 
-[SECTION_2_CONTENT]
-<!-- Example: Technology stack requirements, compliance standards, deployment policies, etc. -->
+### IV. Self-Contained HTML Export
+Exported results MUST be autonomous HTML documents that run without runtime external
+dependencies. Each export MUST embed the data, styles, scripts, and rendering assets
+needed to reopen the result locally. Export generation MUST NOT reference CDNs,
+remote fonts, remote scripts, remote images, or server endpoints at runtime.
 
-## [SECTION_3_NAME]
-<!-- Example: Development Workflow, Review Process, Quality Gates, etc. -->
+Rationale: Users must be able to share or archive the generated result as a single
+portable artifact without relying on this project, a server, or third-party hosts.
 
-[SECTION_3_CONTENT]
-<!-- Example: Code review requirements, testing gates, deployment approval process, etc. -->
+### V. File Format Error Handling
+The application MUST detect and report invalid, unsupported, encrypted, malformed,
+or structurally unexpected Excel files without crashing or exposing raw stack traces
+to users. Error messages MUST identify the actionable problem where possible and
+preserve the original file locally.
+
+Rationale: Workbook input is user-controlled, so robust format handling is part of
+the core user experience.
+
+## Project Constraints
+
+MetricsGraph MUST be deliverable as a static client application. Runtime behavior
+MUST NOT depend on a backend, database, server session, server-hosted assets, or
+runtime package registry access. Build-time tooling MAY use external packages, but
+all runtime dependencies needed by the shipped app and exported HTML MUST be bundled
+locally.
+
+Plans and specifications MUST document privacy-sensitive flows explicitly: file
+selection, workbook parsing, derived data storage, graph rendering, and export.
+Any proposed dependency, browser API, worker, or asset pipeline MUST preserve the
+client-only and self-contained export guarantees.
+
+## Development Workflow
+
+Every feature plan MUST pass the Constitution Check before research and again after
+design. The check MUST confirm there is no backend requirement, Excel parsing occurs
+in the browser, code remains simple enough for direct review, exported HTML is
+self-contained at runtime, and file format failures have user-facing handling.
+
+Tasks MUST include validation work for the principles they touch. Features that
+modify import logic MUST include invalid-file scenarios. Features that modify export
+logic MUST include a self-contained HTML verification. Features that add dependencies
+MUST record why the dependency is necessary and how it is bundled for runtime use.
 
 ## Governance
-<!-- Example: Constitution supersedes all other practices; Amendments require documentation, approval, migration plan -->
 
-[GOVERNANCE_RULES]
-<!-- Example: All PRs/reviews must verify compliance; Complexity must be justified; Use [GUIDANCE_FILE] for runtime development guidance -->
+This constitution supersedes conflicting plans, templates, implementation choices,
+and informal practices. Amendments require an explicit update to this document, a
+Sync Impact Report, and updates to affected Spec Kit templates or runtime guidance.
 
-**Version**: [CONSTITUTION_VERSION] | **Ratified**: [RATIFICATION_DATE] | **Last Amended**: [LAST_AMENDED_DATE]
-<!-- Example: Version: 2.1.1 | Ratified: 2025-06-13 | Last Amended: 2025-07-16 -->
+Versioning follows semantic versioning:
+MAJOR for removing or redefining a principle in a backward-incompatible way, MINOR
+for adding a principle or materially expanding governance, and PATCH for wording
+clarifications that do not change required behavior.
+
+Compliance review is required during planning, task generation, implementation, and
+review. Any violation MUST be documented in the plan's Complexity Tracking section
+with a reason, rejected simpler alternative, and mitigation. Unjustified violations
+block implementation.
+
+**Version**: 1.0.0 | **Ratified**: 2026-05-29 | **Last Amended**: 2026-05-29

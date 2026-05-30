@@ -73,10 +73,14 @@
 <!--
   ACTION REQUIRED: The content in this section represents placeholders.
   Fill them out with the right edge cases.
+  For MetricsGraph, include workbook format failures when the feature touches import,
+  parsing, data interpretation, or export.
 -->
 
 - What happens when [boundary condition]?
 - How does system handle [error scenario]?
+- What happens when the Excel file is invalid, unsupported, encrypted, malformed, or missing expected sheets/columns?
+- How does the exported HTML behave when opened offline with no network access?
 
 ## Requirements *(mandatory)*
 
@@ -92,6 +96,10 @@
 - **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
 - **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
 - **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-CLIENT-001**: System MUST process user workbook data entirely in the browser without uploading it to a server.
+- **FR-CLIENT-002**: System MUST parse supported Excel files locally in the browser and state supported formats and assumptions.
+- **FR-CLIENT-003**: System MUST export results as a self-contained HTML file with no runtime external dependencies.
+- **FR-CLIENT-004**: System MUST show actionable errors for invalid, unsupported, encrypted, malformed, or structurally unexpected Excel files.
 
 *Example of marking unclear requirements:*
 
@@ -128,4 +136,4 @@
 - [Assumption about target users, e.g., "Users have stable internet connectivity"]
 - [Assumption about scope boundaries, e.g., "Mobile support is out of scope for v1"]
 - [Assumption about data/environment, e.g., "Existing authentication system will be reused"]
-- [Dependency on existing system/service, e.g., "Requires access to the existing user profile API"]
+- [Dependency on local browser capabilities, e.g., "Users can select local Excel files through the browser file picker"]

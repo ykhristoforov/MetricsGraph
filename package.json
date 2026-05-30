@@ -1,0 +1,25 @@
+{
+  "name": "metrics-graph",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "build": "vite build",
+    "preview": "vite preview --host 127.0.0.1",
+    "test": "vitest run && playwright test",
+    "test:unit": "vitest run",
+    "test:integration": "playwright test",
+    "fixtures": "node tests/fixtures/create-fixtures.mjs"
+  },
+  "dependencies": {
+    "plotly.js-dist-min": "^2.35.2",
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.49.1",
+    "jsdom": "^25.0.1",
+    "vite": "^6.0.5",
+    "vitest": "^2.1.8"
+  }
+}

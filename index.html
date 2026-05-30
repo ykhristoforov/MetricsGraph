@@ -1,0 +1,71 @@
+<!doctype html>
+<html lang="ru">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>MetricsGraph</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <section class="workspace" aria-labelledby="app-title">
+        <form id="uploadForm" class="upload-panel">
+          <label class="file-field" for="workbookInput">
+            <span class="file-field__title">XLSX файл</span>
+            <span id="fileName" class="file-field__hint">Выберите workbook с месячными метриками</span>
+            <input id="workbookInput" type="file" accept=".xlsx" />
+          </label>
+        </form>
+
+        <div id="errorRegion" class="message message--error" role="alert" aria-live="polite" hidden></div>
+        <div id="statusRegion" class="message" aria-live="polite">Загрузите XLSX файл для построения графика.</div>
+
+        <section id="dashboard" class="dashboard-card" aria-label="Flow Efficiency dashboard" hidden>
+          <header class="workspace__header">
+          <div>
+            <h1 id="app-title">Flow Efficiency · Lead & Cycle Time</h1>
+            <p id="reportSubtitle" class="subtitle">Эффективность потока и время прохождения задач</p>
+          </div>
+          <div class="header-actions">
+            <span class="brand-pill">MOEX ИТ</span>
+            <button id="exportButton" class="secondary-action" type="button" disabled>
+              Скачать как HTML
+            </button>
+          </div>
+          </header>
+
+          <div class="divider"></div>
+
+          <section class="kpi-grid" aria-label="Ключевые показатели">
+            <article class="kpi-card kpi-card--red">
+              <p>Средний Flow Efficiency</p>
+              <strong id="avgFlow">—</strong>
+              <span id="avgFlowNote">без выбросов</span>
+            </article>
+            <article class="kpi-card kpi-card--blue">
+              <p>Средний Lead Time</p>
+              <strong id="avgLead">—</strong>
+              <span>от создания до закрытия</span>
+            </article>
+            <article class="kpi-card kpi-card--brown">
+              <p>Средний Cycle Time</p>
+              <strong id="avgCycle">—</strong>
+              <span>активная работа</span>
+            </article>
+            <article class="kpi-card">
+              <p>Диапазон Flow Eff.</p>
+              <strong id="flowRange">—</strong>
+              <span id="flowRangeNote">—</span>
+            </article>
+          </section>
+
+          <section class="chart-section" aria-label="График Flow Efficiency">
+            <div id="chart" class="chart-empty">График появится после успешной загрузки файла.</div>
+          </section>
+
+          <div id="insightBox" class="insight-box" hidden></div>
+        </section>
+      </section>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
