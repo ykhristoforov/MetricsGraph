@@ -1,4 +1,4 @@
-# Data Model: Flow Efficiency Chart
+# Data Model: Flow Efficiency Dashboard
 
 ## WorkbookUpload
 
@@ -9,7 +9,7 @@ Fields:
 - `mimeType`: Browser-provided MIME type, if available.
 - `sizeBytes`: Local file size.
 - `status`: `idle | reading | invalid-format | invalid-content | parsed | exported`.
-- `error`: Optional `ValidationError`.
+- `error`: Optional validation failure.
 
 Validation rules:
 - File MUST be a valid XLSX workbook.
@@ -56,7 +56,7 @@ Validation rules:
 
 ## FlowEfficiencyPoint
 
-Represents one chart-ready monthly point.
+Represents one dashboard-ready monthly point.
 
 Fields:
 - `month`: Normalized month string `YYYY-MM-01`.
@@ -64,45 +64,95 @@ Fields:
 - `leadDays`: LeadTime value.
 - `cycleDays`: CycleTime value.
 - `flowEfficiencyPercent`: `cycleDays / leadDays * 100`.
+- `isOutlier`: Whether the month is treated as нерепрезентативный for average KPI calculations.
 
 Relationships:
 - One `WorkbookRow` produces one `FlowEfficiencyPoint`.
-- Points are sorted ascending by `month` before rendering and export.
+- Points are sorted ascending by `month` before dashboard rendering and export.
+- Points feed both KPI calculations and the interactive chart.
 
-Validation rules:
+Validation and interpretation rules:
 - `flowEfficiencyPercent` MAY exceed 100 and MUST be displayed as calculated.
 - Values are not normalized or capped.
+- A point is an outlier when Flow Efficiency exceeds 100% or CycleTime exceeds LeadTime.
 
-## ChartConfig
+## DashboardMetrics
 
-Represents the serializable Plotly chart definition.
+Represents the aggregate values shown in dashboard widgets.
 
 Fields:
-- `data`: Plotly traces for monthly bars and trend line.
-- `layout`: Titles, axes, colors, hover behavior, and responsive layout.
+- `period`: Display range from the first month to the last month.
+- `avgFlow`: Average Flow Efficiency.
+- `avgLead`: Average Lead Time.
+- `avgCycle`: Average Cycle Time.
+- `min`: Point with the minimum Flow Efficiency in the calculation basis.
+- `max`: Point with the maximum Flow Efficiency in the calculation basis.
+- `outliers`: Points marked as outliers.
+- `excludedOutlierLabel`: Label of the first outlier excluded from average KPI calculations, if any.
+
+Relationships:
+- Calculated from `FlowEfficiencyPoint` values.
+- Feeds the on-screen dashboard and exported HTML dashboard.
+
+Calculation rules:
+- If at least one non-outlier point exists, average and range widgets use only non-outlier points.
+- If all points are outliers, widgets use all points so the dashboard remains populated.
+- Outlier insight is shown when at least one outlier exists.
+
+## ChartDefinition
+
+Represents the serializable chart definition used in the app and export.
+
+Fields:
+- `data`: Chart traces for Flow Efficiency bars and Lead Time/Cycle Time lines.
+- `layout`: Axes, colors, annotations, hover behavior, legend, and responsive layout.
 - `config`: Interaction options needed by in-app and exported rendering.
-- `palette`: Official MOEX brand color tokens used by the chart.
+- `meta`: Prepared chart points, including labels and outlier flags.
 
 Validation rules:
-- Chart MUST use monthly bars plus a trend line.
+- Chart MUST show months sorted ascending.
+- Chart MUST show Flow Efficiency as bars on the percentage axis.
+- Chart MUST show Lead Time and Cycle Time as lines on the days axis.
 - Chart MUST expose month, LeadTime, CycleTime, and Flow Efficiency in interaction.
-- Chart MUST use official Moscow Exchange brand colors sourced from official assets.
+- Outlier months MUST be visibly annotated instead of silently removed from the chart context.
+
+## DashboardView
+
+Represents the generated report visible to the user.
+
+Fields:
+- `title`: Dashboard title.
+- `subtitle`: Description plus reporting period.
+- `brandMarker`: MOEX IT marker.
+- `kpiWidgets`: Average Flow Efficiency, average Lead Time, average Cycle Time, and Flow Efficiency range.
+- `chartDefinition`: Interactive chart configuration.
+- `insight`: Optional outlier explanation.
+- `exportReady`: Whether «Скачать как HTML» is available.
+
+Validation rules:
+- Dashboard appears only after valid workbook parsing.
+- Dashboard is hidden or cleared after failed import.
+- Export remains unavailable until a valid dashboard exists.
 
 ## HtmlExport
 
-Represents the generated offline report.
+Represents the generated offline dashboard report.
 
 Fields:
 - `fileName`: Suggested `.html` download name.
 - `html`: Full HTML document string.
 - `embeddedData`: Flow Efficiency points embedded in the document.
-- `embeddedChartConfig`: Plotly data/layout/config embedded in the document.
-- `embeddedRuntime`: Plotly runtime embedded in the document.
+- `embeddedChartDefinition`: Chart data/layout/config embedded in the document.
+- `embeddedRuntime`: Chart runtime embedded in the document.
+- `embeddedStyles`: Dashboard styles embedded in the document.
+- `embeddedMetrics`: Dashboard KPI values derived from the embedded data.
 
 Validation rules:
 - Export MUST be one autonomous `.html` file.
+- Export MUST contain the full dashboard, not only the chart.
 - Export MUST NOT reference remote scripts, fonts, images, CDNs, or endpoints.
-- Export MUST open offline and display the same points as the source chart.
+- Export MUST NOT depend on the original XLSX file.
+- Export MUST open offline and display the same period, KPI values, months, and Flow Efficiency values as the source dashboard.
 
 ## ValidationError
 
@@ -117,3 +167,4 @@ Fields:
 Validation rules:
 - Raw stack traces are never shown to users.
 - Format errors and content errors are distinguishable.
+- A failed import leaves no stale dashboard visible as the current result.

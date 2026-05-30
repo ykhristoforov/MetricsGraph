@@ -1,7 +1,7 @@
-# Specification Quality Checklist: Flow Efficiency Chart
+# Specification Quality Checklist: Flow Efficiency Dashboard
 
 **Purpose**: Validate specification completeness and quality before proceeding to planning
-**Created**: 2026-05-29
+**Created**: 2026-05-30
 **Feature**: [spec.md](../spec.md)
 
 ## Content Quality
@@ -31,5 +31,5 @@
 
 ## Notes
 
-- Validation passed on initial review.
-- No clarification markers remain; domain assumptions are recorded in the specification.
+- Validation passed after updating the scope from a single chart to the implemented mini-dashboard.
+- No clarification markers remain; assumptions and outlier behavior are recorded in the specification.
